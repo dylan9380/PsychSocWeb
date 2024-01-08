@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e
+# Uncomment this to echo the commands as they are executed
+#set -x
+shopt -s dotglob
+# FOR CLUB REPS ONLY: set the following variable to e.g. /users/myclub/www
+DEPLOYMENT_DIR=~/www
+
+while read oldrev newrev refname; do
+    branch=$(git rev-parse --symbolic --abbrev-ref $refname)
+    # Only the master branch will be deployed
+    if [ "$branch" != master ]; then
+        continue
+    fi
+    rm -rf $DEPLOYMENT_DIR/*
+    git --work-tree=$DEPLOYMENT_DIR checkout -f $branch
+    # FOR CLUB REPS ONLY: uncomment the following lines and replace 'myclub'
+    # with the Unix group name of your club
+    #chgrp -R myclub $DEPLOYMENT_DIR
+    #chmod -R g+w $DEPLOYMENT_DIR
+done
